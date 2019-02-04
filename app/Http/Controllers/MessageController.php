@@ -20,6 +20,7 @@ class MessageController extends Controller
     public function sendMessages(Request $request)
     {
         auth()->user()->messages()->create(['message'=>$request->message]);
+        broadcast(new MessageSent(auth()->user(),$request->message))->toOthers();
         return response(['status'=>'Message sent successfully']);
     }
 }
