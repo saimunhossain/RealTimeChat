@@ -16,12 +16,18 @@
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
 
+    <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
+
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- Theme styles -->
+    <link href="https://bootswatch.com/4/minty/bootstrap.min.css" rel="stylesheet" type="text/css">
+
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
+        {{-- <nav class="navbar navbar-expand-md navbar-dark navbar-laravel bg-primary">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Laravel') }}
@@ -70,9 +76,27 @@
                     </ul>
                 </div>
             </div>
-        </nav>
+        </nav> --}}
 
-        <main class="py-4">
+        <v-toolbar flat class="bg-primary">
+            <v-toolbar-side-icon class="text-white"></v-toolbar-side-icon>
+            <v-toolbar-title class="text-white">RealTimeChat</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items class="hidden-sm-and-down">
+                    @guest
+                        <v-btn class="text-white" flat href="{{ route('login') }}">Login</v-btn>
+                        <v-btn class="text-white" flat href="{{ route('register') }}">Register</v-btn>
+                    @else
+                        <v-btn class="text-white" flat> {{ Auth::user()->name }}</v-btn>
+                        <v-btn flat
+                        @click=" $refs.logoutForm.submit(); ">
+                        Logout</v-btn>
+                    @endguest
+                    <form ref="logoutForm" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf</form>
+            </v-toolbar-items>
+        </v-toolbar>
+
+        <main>
             @yield('content')
         </main>
     </div>
