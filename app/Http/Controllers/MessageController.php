@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Message;
 use Illuminate\Http\Request;
+use App\Events\MessageSent;
 
 class MessageController extends Controller
 {
@@ -17,10 +18,10 @@ class MessageController extends Controller
         return Message::with('user')->get();
     }
 
-    public function sendMessages(Request $request)
+    public function sendMessage(Request $request)
     {
-        auth()->user()->messages()->create(['message'=>$request->message]);
-        broadcast(new MessageSent(auth()->user(),$request->message))->toOthers();
+        $message = auth()->user()->messages()->create(['message'=>$request->message]);
+        broadcast(new MessageSent(auth()->user(),$message->load('user')))->toOthers();
         return response(['status'=>'Message sent successfully']);
     }
 }
