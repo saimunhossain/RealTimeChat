@@ -1809,6 +1809,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['user'],
   data: function data() {
     return {
       message: null,
@@ -1837,6 +1838,9 @@ __webpack_require__.r(__webpack_exports__);
         _this.allMessages = response.data;
       });
     }
+  },
+  created: function created() {
+    this.fetchMessages();
   }
 });
 
@@ -47462,7 +47466,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("v-divider"),
                   _vm._v(" "),
-                  _vm._l(_vm.allMessages, function(item, index) {
+                  _vm._l(_vm.allMessages, function(message, index) {
                     return _c(
                       "v-list-tile",
                       { key: index, staticClass: "p-3" },
@@ -47470,7 +47474,10 @@ var render = function() {
                         _c(
                           "v-layout",
                           {
-                            attrs: { "align-end": index % 2 == 0, column: "" }
+                            attrs: {
+                              "align-end": _vm.user.id !== message.user.id,
+                              column: ""
+                            }
                           },
                           [
                             _c(
@@ -47484,7 +47491,7 @@ var render = function() {
                                       _c(
                                         "span",
                                         { staticClass: "small font-italic" },
-                                        [_vm._v("Ethan Hawk")]
+                                        [_vm._v(_vm._s(message.user.name))]
                                       )
                                     ]),
                                     _vm._v(" "),
@@ -47496,7 +47503,7 @@ var render = function() {
                                           {
                                             attrs: {
                                               color:
-                                                index % 2 == 0
+                                                _vm.user.id !== message.user.id
                                                   ? "red"
                                                   : "green",
                                               "text-color": "white"
@@ -47506,7 +47513,7 @@ var render = function() {
                                             _c("v-list-tile-content", [
                                               _vm._v(
                                                 "\n                                            " +
-                                                  _vm._s(item.message) +
+                                                  _vm._s(message.message) +
                                                   "\n                                        "
                                               )
                                             ])
@@ -47520,7 +47527,7 @@ var render = function() {
                                     _c(
                                       "v-flex",
                                       { staticClass: "caption font-italic" },
-                                      [_vm._v("2019-2-3")]
+                                      [_vm._v(_vm._s(message.created_at))]
                                     )
                                   ],
                                   1

@@ -13,7 +13,7 @@ class MessageController extends Controller
         $this->middleware('auth');
     }
 
-    public function fetchMessage()
+    public function fetchMessages()
     {
         return Message::with('user')->get();
     }

@@ -5,21 +5,21 @@
                 <v-list>
                     <v-subheader>Group Chat</v-subheader>
                     <v-divider></v-divider>
-                    <v-list-tile class="p-3" v-for="(item, index) in allMessages" :key="index">
-                        <v-layout :align-end="(index%2==0)" column>
+                    <v-list-tile class="p-3" v-for="(message, index) in allMessages" :key="index">
+                        <v-layout :align-end="(user.id!==message.user.id)" column>
                             <v-flex>
                                 <v-layout column>
                                     <v-flex>
-                                        <span class="small font-italic">Ethan Hawk</span>
+                                        <span class="small font-italic">{{ message.user.name }}</span>
                                     </v-flex>
                                     <v-flex>
-                                        <v-chip :color="(index%2==0)?'red':'green'" text-color="white">
+                                        <v-chip :color="(user.id!==message.user.id)?'red':'green'" text-color="white">
                                             <v-list-tile-content>
-                                                {{ item.message }}
+                                                {{ message.message }}
                                             </v-list-tile-content>
                                         </v-chip>
                                     </v-flex>
-                                    <v-flex class="caption font-italic">2019-2-3</v-flex>
+                                    <v-flex class="caption font-italic">{{message.created_at}}</v-flex>
                                 </v-layout>
                             </v-flex>
                         </v-layout>
@@ -45,6 +45,7 @@
 
 <script>
     export default {
+        props:['user'],
         data () {
             return {
                 message:null,
@@ -69,7 +70,10 @@
                 axios.get('/messages').then(response => {
                     this.allMessages = response.data;
                 });
-            }
+            },
+        },
+        created(){
+            this.fetchMessages();
         }
     }
 </script>
