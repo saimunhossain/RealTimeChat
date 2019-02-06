@@ -78,7 +78,7 @@
             </div>
         </nav> --}}
 
-        <v-toolbar flat class="bg-primary">
+        <v-toolbar flat class="bg-primary" fixed>
             <v-toolbar-side-icon class="text-white"></v-toolbar-side-icon>
             <v-toolbar-title class="text-white">RealTimeChat</v-toolbar-title>
             <v-spacer></v-spacer>

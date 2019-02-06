@@ -1,7 +1,7 @@
 <template>
     <v-layout row>
         <v-flex xs12 sm6 offset-sm3>
-            <v-card class="mb-4" color="purple">
+            <v-card class="chat-card" color="purple">
                 <v-list>
                     <v-subheader>Group Chat</v-subheader>
                     <v-divider></v-divider>
@@ -10,16 +10,16 @@
                             <v-flex>
                                 <v-layout column>
                                     <v-flex>
-                                        <span class="small font-italic">{{ message.user.name }}</span>
+                                        <span class="font-italic">{{ message.user.name }}</span>
                                     </v-flex>
                                     <v-flex>
-                                        <v-chip :color="(user.id!==message.user.id)?'red':'green'" text-color="white">
+                                        <v-chip :color="(user.id!==message.user.id)?'deep-purple':'light-blue'" text-color="white">
                                             <v-list-tile-content>
                                                 {{ message.message }}
                                             </v-list-tile-content>
                                         </v-chip>
                                     </v-flex>
-                                    <v-flex class="caption font-italic">{{message.created_at}}</v-flex>
+                                    <v-flex class="small font-italic">{{message.created_at | mydate}}</v-flex>
                                 </v-layout>
                             </v-flex>
                         </v-layout>
@@ -35,7 +35,8 @@
                 </v-flex>
 
                 <v-flex xs2> 
-                    <v-btn @click="sendMessage" dark class="mt-3 ml-2 white-text" small color="green">send</v-btn>
+                    <v-btn @click="sendMessage" 
+                    dark class="mt-3 ml-2 white-text" small color="green">send</v-btn>
                 </v-flex>
             </v-layout>
         </v-footer>
@@ -45,35 +46,56 @@
 
 <script>
     export default {
-        props:['user'],
-        data () {
-            return {
-                message:null,
-                allMessages:[]
-            }
-        },
-        methods:{
-            sendMessage(){
-                //check if there message
-                if(!this.message){
-                    return alert('Please enter message');
-                }
-
-                // this.allMessages.push(this.message);
-
-                // send post request
-                axios.post('/messages', {message: this.message}).then(response =>{
-                    console.log(response.data);
-                });
-            },
-            fetchMessages(){
-                axios.get('/messages').then(response => {
-                    this.allMessages = response.data;
-                });
-            },
-        },
-        created(){
-            this.fetchMessages();
+    props:['user'],
+    
+    data () {
+      return {
+        message:null,
+        allMessages:[]
+      }
+    },
+    methods:{
+      sendMessage(){
+        //check if there message
+        if(!this.message){
+          return alert('Please enter message');
         }
+          axios.post('/messages', {message: this.message}).then(response => {
+                    this.message=null;
+                    this.allMessages.push(response.data.message)
+                    setTimeout(this.scrollToEnd,100);
+          });
+      },
+      fetchMessages() {
+            axios.get('/messages').then(response => {
+                this.allMessages = response.data;
+            });
+        },
+      scrollToEnd(){
+        window.scrollTo(0,99999);
+      }
+    
+    },
+    mounted(){
+    },
+    created(){
+      this.fetchMessages();
+      
+      Echo.private('RealTimeChat')
+      .listen('MessageSent',(e)=>{
+          this.allMessages.push(e.message)
+          setTimeout(this.scrollToEnd,100);
+      });
     }
+    
+  }
 </script>
+
+<style scoped>
+.theme--light.v-list {
+    background: rgb(166, 217, 233);
+    color: #000;
+    margin-bottom: 68px;
+    margin-top: 58px;
+}
+</style>

@@ -22,6 +22,6 @@ class MessageController extends Controller
     {
         $message = auth()->user()->messages()->create(['message'=>$request->message]);
         broadcast(new MessageSent(auth()->user(),$message->load('user')))->toOthers();
-        return response(['status'=>'Message sent successfully']);
+        return response(['status'=>'Message sent successfully','message'=>$message]);
     }
 }
