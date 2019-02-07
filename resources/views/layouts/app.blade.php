@@ -87,6 +87,8 @@
                         <v-btn class="text-white" flat href="{{ route('login') }}">Login</v-btn>
                         <v-btn class="text-white" flat href="{{ route('register') }}">Register</v-btn>
                     @else
+                        <v-btn class="text-white" flat href="{{ route('home') }}"> Group</v-btn>
+                        <v-btn class="text-white" flat href="{{ route('private') }}"> Private</v-btn>
                         <v-btn class="text-white" flat> {{ Auth::user()->name }}</v-btn>
                         <v-btn flat
                         @click=" $refs.logoutForm.submit(); ">

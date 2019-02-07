@@ -29,7 +29,7 @@ import 'vuetify/dist/vuetify.min.css'
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('Chat', require('./components/Chat.vue').default);
-//Vue.component('Chat', require('./components/Chat.vue'));
+Vue.component('PrivateChat', require('./components/PrivateChat.vue').default);
 
 
 Vue.filter('mydate',function(created){
