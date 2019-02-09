@@ -98,8 +98,10 @@
             </v-toolbar-items>
         </v-toolbar>
 
-        <main>
-            @yield('content')
+        <main class="mt-5">
+            <v-container fluid>
+                @yield('content')
+            </v-container>
         </main>
     </div>
 </body>

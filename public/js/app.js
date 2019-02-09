@@ -1958,14 +1958,68 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['user'],
   data: function data() {
     return {
       message: null,
+      activeFriend: null,
       allMessages: [],
       users: []
     };
+  },
+  watch: {
+    activeFriend: function activeFriend(val) {
+      this.fetchMessages();
+    }
   },
   methods: {
     sendMessage: function sendMessage() {
@@ -1976,7 +2030,11 @@ __webpack_require__.r(__webpack_exports__);
         return alert('Please enter message');
       }
 
-      axios.post('/messages', {
+      if (!this.activeFriend) {
+        return alert('Please select friend');
+      }
+
+      axios.post('/private-messages/' + this.activeFriend, {
         message: this.message
       }).then(function (response) {
         _this.message = null;
@@ -1989,7 +2047,11 @@ __webpack_require__.r(__webpack_exports__);
     fetchMessages: function fetchMessages() {
       var _this2 = this;
 
-      axios.get('/messages').then(function (response) {
+      if (!this.activeFriend) {
+        return alert('Please select friend');
+      }
+
+      axios.get('/private-messages/' + this.activeFriend).then(function (response) {
         _this2.allMessages = response.data;
       });
     },
@@ -2001,16 +2063,17 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     scrollToEnd: function scrollToEnd() {
-      window.scrollTo(0, 99999);
+      document.getElementById('privateMessageBox').scrollTo(0, 99999);
     }
   },
   mounted: function mounted() {},
   created: function created() {
     var _this4 = this;
 
-    this.fetchMessages();
     this.fetchUsers();
-    Echo.private('RealTimeChat').listen('MessageSent', function (e) {
+    Echo.private('privatechat.' + this.user.id).listen('PrivateMessageSent', function (e) {
+      _this4.activeFriend = e.message.user_id;
+
       _this4.allMessages.push(e.message);
 
       setTimeout(_this4.scrollToEnd, 100);
@@ -6329,7 +6392,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* .theme--light.v-list {\r\n    background: #fff;\r\n    color: #000;\r\n    margin-bottom: 68px;\r\n    margin-top: 58px;\r\n} */\n.online-users[data-v-237378e0],.messages[data-v-237378e0]{\r\n  overflow-y:scroll;\r\n  height:100vh;\r\n  position: -webkit-sticky;\r\n  position: sticky;\n}\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* .theme--light.v-list {\r\n    background: #fff;\r\n    color: #000;\r\n    margin-bottom: 68px;\r\n    margin-top: 58px;\r\n} */\n.online-users[data-v-237378e0],.messages[data-v-237378e0]{\r\n  overflow-y:scroll;\r\n  height:100vh;\r\n  position: -webkit-sticky;\r\n  position: sticky;\n}\r\n", ""]);
 
 // exports
 
@@ -65561,33 +65624,47 @@ var render = function() {
     [
       _c(
         "v-flex",
-        { staticClass: "online-users", attrs: { fixed: "", xs3: "" } },
+        { staticClass: "online-users", attrs: { xs3: "" } },
         [
           _c(
             "v-list",
-            _vm._l(_vm.users, function(user) {
-              return _c(
-                "v-list-tile",
-                { key: user.id, on: { click: function($event) {} } },
-                [
-                  _c(
-                    "v-list-tile-action",
+            _vm._l(_vm.users, function(friend) {
+              return _vm.user.id != friend.id
+                ? _c(
+                    "v-list-tile",
+                    {
+                      key: friend.id,
+                      attrs: {
+                        color: friend.id == _vm.activeFriend ? "green" : ""
+                      },
+                      on: {
+                        click: function($event) {
+                          _vm.activeFriend = friend.id
+                        }
+                      }
+                    },
                     [
-                      _c("v-icon", { attrs: { color: "green" } }, [
-                        _vm._v("account_circle")
-                      ])
+                      _c(
+                        "v-list-tile-action",
+                        [
+                          _c("v-icon", { attrs: { color: "green" } }, [
+                            _vm._v("account_circle")
+                          ])
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-list-tile-content",
+                        [
+                          _c("v-list-tile-title", [_vm._v(_vm._s(friend.name))])
+                        ],
+                        1
+                      )
                     ],
                     1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-list-tile-content",
-                    [_c("v-list-tile-title", [_vm._v(_vm._s(user.name))])],
-                    1
                   )
-                ],
-                1
-              )
+                : _vm._e()
             }),
             1
           )
@@ -65597,7 +65674,10 @@ var render = function() {
       _vm._v(" "),
       _c(
         "v-flex",
-        { staticClass: "messages mb-5", attrs: { xs9: "" } },
+        {
+          staticClass: "messages mb-5",
+          attrs: { id: "privateMessageBox", xs9: "" }
+        },
         [
           _c(
             "v-list",
@@ -65623,9 +65703,11 @@ var render = function() {
                             { attrs: { column: "" } },
                             [
                               _c("v-flex", [
-                                _c("span", { staticClass: "font-italic" }, [
-                                  _vm._v(_vm._s(message.user.name))
-                                ])
+                                _c(
+                                  "span",
+                                  { staticClass: "small font-italic" },
+                                  [_vm._v(_vm._s(message.user.name))]
+                                )
                               ]),
                               _vm._v(" "),
                               _c(
@@ -65637,17 +65719,17 @@ var render = function() {
                                       attrs: {
                                         color:
                                           _vm.user.id !== message.user.id
-                                            ? "deep-purple"
-                                            : "light-blue",
+                                            ? "red"
+                                            : "green",
                                         "text-color": "white"
                                       }
                                     },
                                     [
                                       _c("v-list-tile-content", [
                                         _vm._v(
-                                          "\n                                        " +
+                                          "\n                      " +
                                             _vm._s(message.message) +
-                                            "\n                                    "
+                                            "\n                    "
                                         )
                                       ])
                                     ],
@@ -65659,10 +65741,12 @@ var render = function() {
                               _vm._v(" "),
                               _c(
                                 "v-flex",
-                                { staticClass: "small font-italic" },
+                                { staticClass: "caption font-italic" },
                                 [
                                   _vm._v(
-                                    _vm._s(_vm._f("mydate")(message.created_at))
+                                    "\n                  " +
+                                      _vm._s(message.created_at) +
+                                      "\n                "
                                   )
                                 ]
                               )
@@ -65680,80 +65764,77 @@ var render = function() {
               )
             }),
             1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "v-footer",
-        {
-          staticClass: "vfooter",
-          attrs: { height: "auto", xs8: "", "offset-xs2": "", fixed: "" }
-        },
-        [
+          ),
+          _vm._v(" "),
           _c(
-            "v-layout",
-            { attrs: { row: "" } },
+            "v-footer",
+            { attrs: { height: "auto", fixed: "", color: "grey" } },
             [
               _c(
-                "v-flex",
-                {
-                  attrs: {
-                    xs6: "",
-                    "offset-xs3": "",
-                    "justify-center": "",
-                    "align-center": ""
-                  }
-                },
-                [
-                  _c("v-text-field", {
-                    attrs: {
-                      rows: "2",
-                      label: "Enter Message",
-                      "single-line": ""
-                    },
-                    on: {
-                      keyup: function($event) {
-                        if (
-                          !("button" in $event) &&
-                          _vm._k(
-                            $event.keyCode,
-                            "enter",
-                            13,
-                            $event.key,
-                            "Enter"
-                          )
-                        ) {
-                          return null
-                        }
-                        return _vm.sendMessage($event)
-                      }
-                    },
-                    model: {
-                      value: _vm.message,
-                      callback: function($$v) {
-                        _vm.message = $$v
-                      },
-                      expression: "message"
-                    }
-                  })
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-flex",
-                { attrs: { xs2: "" } },
+                "v-layout",
+                { attrs: { row: "" } },
                 [
                   _c(
-                    "v-btn",
+                    "v-flex",
                     {
-                      staticClass: "mt-3 ml-2 white-text",
-                      attrs: { dark: "", small: "", color: "green" },
-                      on: { click: _vm.sendMessage }
+                      attrs: {
+                        xs6: "",
+                        "offset-xs3": "",
+                        "justify-center": "",
+                        "align-center": ""
+                      }
                     },
-                    [_vm._v("send")]
+                    [
+                      _c("v-text-field", {
+                        attrs: {
+                          rows: "2",
+                          label: "Enter Message",
+                          "single-line": ""
+                        },
+                        on: {
+                          keyup: function($event) {
+                            if (
+                              !("button" in $event) &&
+                              _vm._k(
+                                $event.keyCode,
+                                "enter",
+                                13,
+                                $event.key,
+                                "Enter"
+                              )
+                            ) {
+                              return null
+                            }
+                            return _vm.sendMessage($event)
+                          }
+                        },
+                        model: {
+                          value: _vm.message,
+                          callback: function($$v) {
+                            _vm.message = $$v
+                          },
+                          expression: "message"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-flex",
+                    { attrs: { xs2: "" } },
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          staticClass: "mt-3 ml-2 white--text",
+                          attrs: { dark: "", small: "", color: "green" },
+                          on: { click: _vm.sendMessage }
+                        },
+                        [_vm._v("send")]
+                      )
+                    ],
+                    1
                   )
                 ],
                 1
